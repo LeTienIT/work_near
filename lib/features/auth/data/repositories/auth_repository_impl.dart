@@ -16,7 +16,16 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await dataSource.loginWithEmailPassword(email, password);
       return Right(user);
     } on fb.FirebaseAuthException catch (e) {
-      return Left(AuthFailure(e.toString()));
+      // print(e.code);
+      if (e.code == 'invalid-email') {
+        return Left(AuthFailure('Email không hợp lệ.'));
+      } else if (e.code == 'user-not-found') {
+        return Left(AuthFailure('Tài khoản không tồn tại.'));
+      } else if (e.code == 'wrong-password') {
+        return Left(AuthFailure('Sai mật khẩu.'));
+      } else {
+        return Left(AuthFailure('Đăng nhập thất bại. Vui lòng thử lại.'));
+      }
     }catch (e) {
       return Left(ServerFailure(e.toString()));
     }
