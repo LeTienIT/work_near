@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_near/core/usecase/usecase.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_state.dart';
 import 'package:work_near/features/profile/presentation/bloc/profile_bloc.dart';
@@ -27,7 +28,8 @@ class _EditProfileScreen extends State<EditProfileScreen>{
 
     final authState = context.read<AuthBloc>().state;
     if(authState is AuthAuthenticated){
-      context.read<ProfileBloc>().add(LoadUserProfile(authState.user.uid));
+      final params = GetProfileParams(authState.user.uid, authState.user.email);
+      context.read<ProfileBloc>().add(LoadUserProfile(params));
     }
   }
   @override

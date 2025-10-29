@@ -5,13 +5,13 @@ import 'package:work_near/features/profile/domain/repositories/profile_repositor
 
 import '../../../../core/error/failures.dart';
 
-class GetProfile extends UseCase<UserProfileEntity, String>{
+class GetProfile extends UseCase<UserProfileEntity, GetProfileParams>{
   ProfileRepository repository;
 
   GetProfile(this.repository);
 
   @override
-  Future<Either<Failure, UserProfileEntity>> call(String params) {
+  Future<Either<Failure, UserProfileEntity>> call(GetProfileParams params) {
     return repository.getProfile(params);
   }
 }

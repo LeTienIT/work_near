@@ -16,3 +16,10 @@ class LoginParams {
     required this.password,
   });
 }
+
+class GetProfileParams{
+  final String uid;
+  final String email;
+
+  GetProfileParams(this.uid, this.email);
+}

@@ -3,6 +3,10 @@ abstract class Failure {
   const Failure(this.message);
 }
 
+class UnknownFailure extends Failure {
+  const UnknownFailure(super.message);
+}
+
 class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
@@ -13,4 +17,8 @@ class AuthFailure extends Failure {
 
 class RegisterFailure extends Failure {
   const RegisterFailure(super.message);
+}
+
+class GetProfileFailure extends Failure{
+  const GetProfileFailure(super.message);
 }

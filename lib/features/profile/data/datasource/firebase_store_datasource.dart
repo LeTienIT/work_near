@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:work_near/core/usecase/usecase.dart';
 import 'package:work_near/features/profile/domain/entities/user_profile_entity.dart';
 
 class FirebaseStoreDataSource{
@@ -6,24 +7,24 @@ class FirebaseStoreDataSource{
 
   FirebaseStoreDataSource(this.firestore);
 
-  Future<UserProfileEntity> getProfile(String uid, String email) async{
-    final docRef = firestore.collection('users').doc(uid);
+  Future<UserProfileEntity> getProfile(GetProfileParams params) async{
+    final docRef = firestore.collection('users').doc(params.uid);
     final doc = await docRef.get();
 
     if(!doc.exists){
-      final defaulData = {
-        'uid' : uid,
-        'email': email,
+      final defaultData = {
+        'uid' : params.uid,
+        'email': params.email,
         'name': '',
         'phone': '',
         'avatarUrl': '',
         'skills': [],
         'createAt': FieldValue.serverTimestamp()
       };
-      await docRef.set(defaulData);
+      await docRef.set(defaultData);
       return UserProfileEntity(
-          uid: uid, 
-          email: email,
+          uid: params.uid,
+          email: params.email,
           name: '',
           phone: '',
           avatarUrl: '',
@@ -32,8 +33,8 @@ class FirebaseStoreDataSource{
     }
     final data = doc.data()!;
     return UserProfileEntity(
-      uid: data['uid'] ?? uid,
-      email: data['email'] ?? email,
+      uid: data['uid'] ?? params.uid,
+      email: data['email'] ?? params.email,
       name: data['name'],
       phone: data['phone'],
       avatarUrl: data['avatarUrl'],

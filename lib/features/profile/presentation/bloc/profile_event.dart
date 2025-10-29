@@ -1,3 +1,4 @@
+import 'package:work_near/core/usecase/usecase.dart';
 import 'package:work_near/features/profile/domain/entities/user_profile_entity.dart';
 
 abstract class ProfileEvent {
@@ -5,8 +6,8 @@ abstract class ProfileEvent {
 }
 
 class LoadUserProfile extends ProfileEvent {
-  final String uid;
-  const LoadUserProfile(this.uid);
+  final GetProfileParams params;
+  const LoadUserProfile(this.params);
 }
 
 class UpdateUserProfile extends ProfileEvent {
