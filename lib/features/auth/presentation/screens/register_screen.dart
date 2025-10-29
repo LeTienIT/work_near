@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:work_near/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:work_near/features/auth/presentation/bloc/auth_event.dart';
+import 'package:work_near/features/auth/presentation/bloc/auth_state.dart';
 
 class RegisterScreen extends StatefulWidget{
   const RegisterScreen({super.key});
@@ -43,141 +48,157 @@ class _RegisterScreen extends State<RegisterScreen> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade50, Colors.green],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0,horizontal: 20),
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Đăng ký",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
-                      shadows: [
-                       Shadow(
-                         color: Colors.black,
-                         offset: Offset(2, 2),
-                         blurRadius: 2
-                       )
-                      ]
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                  TextFormField(
-                    controller: email,
-                    decoration: InputDecoration(
-                      label: Text("Email"),
-                      prefixIcon: Icon(Icons.email_outlined),
-                      border: OutlineInputBorder()
-                    ),
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return "Email không hợp lệ";
-                      }
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  TextFormField(
-                    controller: pass,
-                    obscureText: hidePass,
-                    decoration: InputDecoration(
-                      label: Text("Mật khẩu"),
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.password_outlined),
-                      suffixIcon: IconButton(
-                          onPressed: (){
-                            setState(() {
-                              hidePass = ! hidePass;
-                            });
+    return BlocConsumer<AuthBloc, AuthState>(
+        builder: (context, state){
+          return Scaffold(
+            body: state is AuthLoading ? Center(child: CircularProgressIndicator(),) :
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue.shade50, Colors.green],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 0,horizontal: 20),
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Đăng ký",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.5,
+                              shadows: [
+                                Shadow(
+                                    color: Colors.black,
+                                    offset: Offset(2, 2),
+                                    blurRadius: 2
+                                )
+                              ]
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          controller: email,
+                          decoration: InputDecoration(
+                              label: Text("Email"),
+                              prefixIcon: Icon(Icons.email_outlined),
+                              border: OutlineInputBorder()
+                          ),
+                          validator: (value){
+                            if(value==null || value.isEmpty){
+                              return "Email không hợp lệ";
+                            }
                           },
-                          icon: Icon(hidePass ? Icons.visibility_off : Icons.visibility)
-                      )
-                    ),
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return "Mật khẩu không hợp lệ";
-                      }
-                      else{
-                        if(value.length <= 6){
-                          return "Mật khẩu phải có ít nhất 6 ký tự";
-                        }
-                      }
-                    },
-                  ),
-                  SizedBox(height: 10,),
-                  TextFormField(
-                    controller: passRepeat,
-                    obscureText: hidePassRepeat,
-                    decoration: InputDecoration(
-                        label: Text("Xác nhận lại mật khẩu"),
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.password_outlined),
-                        suffixIcon: IconButton(
-                            onPressed: (){
-                              setState(() {
-                                hidePassRepeat = !hidePassRepeat;
-                              });
-                            },
-                            icon: Icon(hidePassRepeat ? Icons.visibility_off: Icons.visibility)
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          controller: pass,
+                          obscureText: hidePass,
+                          decoration: InputDecoration(
+                              label: Text("Mật khẩu"),
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      hidePass = ! hidePass;
+                                    });
+                                  },
+                                  icon: Icon(hidePass ? Icons.visibility_off : Icons.visibility)
+                              )
+                          ),
+                          validator: (value){
+                            if(value==null || value.isEmpty){
+                              return "Mật khẩu không hợp lệ";
+                            }
+                            else{
+                              if(value.length <= 6){
+                                return "Mật khẩu phải có ít nhất 6 ký tự";
+                              }
+                            }
+                          },
+                        ),
+                        SizedBox(height: 10,),
+                        TextFormField(
+                          controller: passRepeat,
+                          obscureText: hidePassRepeat,
+                          decoration: InputDecoration(
+                              label: Text("Xác nhận lại mật khẩu"),
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.password_outlined),
+                              suffixIcon: IconButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      hidePassRepeat = !hidePassRepeat;
+                                    });
+                                  },
+                                  icon: Icon(hidePassRepeat ? Icons.visibility_off: Icons.visibility)
+                              )
+                          ),
+                          validator: (value){
+                            if( value==null || value.isEmpty){
+                              return "Yêu cầu xác nhận lại mật khẩu";
+                            }
+                            else{
+                              if(value != pass.text){
+                                return "Xác nhận mật khẩu không chính xác";
+                              }
+                            }
+                          },
+                        ),
+                        SizedBox(height: 10,),
+                        ElevatedButton.icon(
+                          onPressed: (){
+                            if(formKey.currentState!.validate()){
+                              context.read<AuthBloc>().add(RegisterRequested(email.text, pass.text));
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(12)
+                              )
+                          ),
+                          label: Text("Đăng ký"),
+                          icon: Icon(Icons.add_box),
+                        ),
+                        SizedBox(height: 10,),
+                        TextButton.icon(
+                          onPressed: (){
+                            context.go('/login');
+                          },
+                          label: Text("Đã có tài khoản, đăng nhập"),
+                          icon: Icon(Icons.login),
                         )
+                      ],
                     ),
-                    validator: (value){
-                      if( value==null || value.isEmpty){
-                        return "Yêu cầu xác nhận lại mật khẩu";
-                      }
-                      else{
-                        if(value != pass.text){
-                          return "Xác nhận mật khẩu không chính xác";
-                        }
-                      }
-                    },
                   ),
-                  SizedBox(height: 10,),
-                  ElevatedButton.icon(
-                    onPressed: (){
-                      if(formKey.currentState!.validate()){
-
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(12)
-                      )
-                    ),
-                    label: Text("Đăng ký"),
-                    icon: Icon(Icons.add_box),
-                  ),
-                  SizedBox(height: 10,),
-                  TextButton.icon(
-                      onPressed: (){
-
-                      },
-                      label: Text("Đã có tài khoản, đăng nhập"),
-                      icon: Icon(Icons.login),
-                  )
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
+          );
+        },
+        listener: (context, state){
+          if (state is RegisterError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message, style: TextStyle(color: Colors.red),)),
+            );
+          } else if (state is RegisterSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Đăng ký tài khoản thành công", style: TextStyle(color: Colors.green),)),
+            );
+          }
+        }
     );
   }
 }

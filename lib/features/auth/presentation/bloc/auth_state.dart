@@ -29,3 +29,13 @@ class AuthError extends AuthState {
 }
 
 class AuthLoggedOut extends AuthState {}
+
+class RegisterSuccess extends AuthState {}
+
+class RegisterError extends AuthState {
+  final String message;
+  const RegisterError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

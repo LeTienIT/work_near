@@ -49,8 +49,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final result = await registerUser(LoginParams(email: event.email, password: event.password,));
     result.fold(
-          (failure) => emit(AuthError(_mapFailureToMessage(failure))),
-          (user) => emit(AuthAuthenticated(user)),
+          (failure) => emit(RegisterError(_mapFailureToMessage(failure))),
+          (user) => emit(RegisterSuccess()),
     );
   }
 

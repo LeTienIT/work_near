@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_event.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_state.dart';
@@ -153,7 +154,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             TextButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                context.go('/register');
+                              },
                               icon: Icon(Icons.app_registration_outlined, size: 18),
                               label: Text("Đăng ký"),
                               style: TextButton.styleFrom(
@@ -183,11 +186,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         listener: (context, state){
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-
+              SnackBar(content: Text(state.message, style: TextStyle(color: Colors.red),)),
             );
           } else if (state is AuthAuthenticated) {
-            // Navigator.pushReplacementNamed(context, '/home');
+            context.go('/home');
           }
         }
     );
