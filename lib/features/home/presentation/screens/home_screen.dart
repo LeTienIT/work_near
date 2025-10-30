@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:work_near/core/presentation/widgets/app_drawer.dart';
 
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -80,6 +81,7 @@ class _HomeScreen extends State<HomeScreen>{
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
+                  context.go("/add-job");
                 },
                 icon: const Icon(Icons.add),
                 label: const Text('Đăng Job Mới'),

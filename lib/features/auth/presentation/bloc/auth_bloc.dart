@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_near/features/auth/domain/entities/user_entity.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../../domain/usecase/login_user.dart';
 import '../../domain/usecase/logout_user.dart';
@@ -11,15 +13,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUser loginUser;
   final LogoutUser logoutUser;
   final RegisterUser registerUser;
+  final FirebaseAuth auth;
 
   AuthBloc({
     required this.loginUser,
     required this.logoutUser,
     required this.registerUser,
+    required this.auth,
   }) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
     on<RegisterRequested>(_onRegisterRequested);
+    _listenToAuthChanges();
+  }
+
+  void _listenToAuthChanges() {
+    Future.delayed(Duration(milliseconds: 50));
+    auth.authStateChanges().listen((User? firebaseUser) {
+      if (firebaseUser != null) {
+        final userEntity = UserEntity.fromFirebaseUser(firebaseUser);
+        emit(AuthAuthenticated(userEntity));
+      }
+    });
   }
 
   Future<void> _onLoginRequested(LoginRequested event, Emitter<AuthState> emit) async {

@@ -8,6 +8,9 @@ import 'package:work_near/features/auth/presentation/bloc/auth_state.dart';
 import 'package:work_near/features/auth/presentation/screens/login_screen.dart';
 import 'package:work_near/features/auth/presentation/screens/register_screen.dart';
 import 'package:work_near/features/home/presentation/screens/home_screen.dart';
+import 'package:work_near/features/job/presentation/bloc/job_bloc.dart';
+import 'package:work_near/features/job/presentation/screens/add_job_screen.dart';
+import 'package:work_near/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:work_near/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'firebase_options.dart';
 
@@ -48,13 +51,22 @@ class MyApp extends StatelessWidget {
         ),
         GoRoute(
             path: '/profile',
-            builder: (context, state) => EditProfileScreen()
+            builder: (context, state) => BlocProvider(
+              create: (_)=> sl.di<ProfileBloc>(),
+              child: const EditProfileScreen(),
+            )
+        ),
+        GoRoute(
+            path: '/add-job',
+            builder: (context, state) => BlocProvider(
+              create: (_)=> sl.di<JobBloc>(),
+              child: const AddJobScreen(),
+            )
         ),
       ],
     redirect: (context, state){
         final authBloc = sl.di<AuthBloc>();
         final currentState = authBloc.state;
-        // Đang loadding =>giữ nguyên trang hiện tại
         if(currentState is AuthLoading) return null;
 
         // Đã login -> nếu truy cập tiếp route login thì về luôn trang home

@@ -8,7 +8,13 @@ import 'package:work_near/features/auth/domain/usecase/login_user.dart';
 import 'package:work_near/features/auth/domain/usecase/logout_user.dart';
 import 'package:work_near/features/auth/domain/usecase/register_user.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:work_near/features/profile/domain/usecase/set_profile.dart';
 
+import '../../features/job/data/datasource/fire_job_datasource.dart';
+import '../../features/job/data/repositories/job_repository_impl.dart';
+import '../../features/job/domain/repositories/job_repository.dart';
+import '../../features/job/domain/usecase/job_add.dart';
+import '../../features/job/presentation/bloc/job_bloc.dart';
 import '../../features/profile/data/datasource/firebase_store_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
@@ -41,7 +47,8 @@ void initDI(){
       () => AuthBloc(
           loginUser: di<LoginUser>(),
           logoutUser: di<LogoutUser>(),
-          registerUser: di<RegisterUser>()
+          registerUser: di<RegisterUser>(),
+          auth: di<fb.FirebaseAuth>()
       )
   );
 
@@ -55,7 +62,29 @@ void initDI(){
   di.registerLazySingleton<GetProfile>(
         () => GetProfile(di<ProfileRepository>()),
   );
+  di.registerLazySingleton<SetProfile>(
+        () => SetProfile(di<ProfileRepository>()),
+  );
   di.registerFactory<ProfileBloc>(
-        () => ProfileBloc(di<GetProfile>()),
+        () => ProfileBloc(
+          di<GetProfile>(),
+          di<SetProfile>()
+        ),
+  );
+
+  //   BLOC JOB
+  di.registerLazySingleton<FirebaseJobDataSource>(
+        () => FirebaseJobDataSource(di<FirebaseFirestore>()),
+  );
+  di.registerLazySingleton<JobRepository>(
+          () => JobRepositoryImpl(di<FirebaseJobDataSource>())
+  );
+  di.registerLazySingleton<JobAdd>(
+          () => JobAdd(di<JobRepository>())
+  );
+  di.registerFactory<JobBloc>(
+          () => JobBloc(
+              di<JobAdd>()
+          )
   );
 }

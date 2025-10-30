@@ -30,4 +30,14 @@ class ProfileRepositoryImpl implements ProfileRepository{
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> setProfile(UserProfileEntity entity) async {
+    try{
+      await fireStore.setProfile(entity);
+      return Right(true);
+    }catch(e){
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
 }

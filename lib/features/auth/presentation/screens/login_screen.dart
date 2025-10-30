@@ -20,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
 
   bool hidePass = true;
 
@@ -34,19 +33,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut)
     );
 
-    _slideAnimation = Tween<Offset>(begin: Offset(0, 0.3), end: Offset.zero).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut)
-    );
-
     _controller.forward();
 
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

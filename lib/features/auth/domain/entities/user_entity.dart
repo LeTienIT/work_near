@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserEntity extends Equatable {
   final String uid;
@@ -10,6 +11,14 @@ class UserEntity extends Equatable {
     required this.email,
     required this.emailVerified,
   });
+
+  factory UserEntity.fromFirebaseUser(User firebaseUser) {
+    return UserEntity(
+      uid: firebaseUser.uid,
+      email: firebaseUser.email ?? '',
+      emailVerified: firebaseUser.emailVerified,
+    );
+  }
 
   @override
   List<Object?> get props => [uid, email, emailVerified];
