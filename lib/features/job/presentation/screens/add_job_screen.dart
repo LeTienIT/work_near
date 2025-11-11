@@ -22,6 +22,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
   final _descCtrl = TextEditingController();
   final _priceCtrl = TextEditingController();
   final _locationCtrl = TextEditingController();
+  final _locationDetailCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
                   TextFormField(
                     controller: _priceCtrl,
                     decoration: const InputDecoration(
-                        labelText: 'Giá',
+                        labelText: 'Chi phí',
                         border: OutlineInputBorder()
                     ),
                     keyboardType: TextInputType.number,
@@ -95,6 +96,21 @@ class _AddJobScreenState extends State<AddJobScreen> {
                     controller: _locationCtrl,
                     decoration: const InputDecoration(
                         labelText: 'Địa điểm',
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.star_rate_rounded, color: Colors.red,)
+                    ),
+                    validator: (value){
+                      if(value==null || value.isEmpty){
+                        return "Không được để trống";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _locationDetailCtrl,
+                    decoration: const InputDecoration(
+                        labelText: 'Chi tiết địa điểm',
                         border: OutlineInputBorder(),
                         suffixIcon: Icon(Icons.star_rate_rounded, color: Colors.red,)
                     ),
@@ -116,7 +132,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
                             title: _titleCtrl.text,
                             description: _descCtrl.text,
                             price: double.tryParse(_priceCtrl.text),
-                            location: _locationCtrl.text,
+                            // location: _locationCtrl.text,
                             applicants: [],
                             deadline: DateTime.now().add(const Duration(days: 7)),
                             status: 'open',

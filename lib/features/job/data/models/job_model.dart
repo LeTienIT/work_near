@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:work_near/features/job/domain/entities/job_location_entity.dart';
 
 import '../../domain/entities/job_entity.dart';
+
 
 class JobModel extends JobEntity {
   const JobModel({
@@ -18,27 +20,40 @@ class JobModel extends JobEntity {
     super.updatedAt,
   });
 
+  // ------------------------------
+  // FROM MAP (Firestore → Model)
+  // ------------------------------
   factory JobModel.fromMap(Map<String, dynamic> map) {
     return JobModel(
       jobId: map['jobId'],
       ownerId: map['ownerId'],
-      title: map['title'],
-      description: map['description'],
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
       price: (map['price'] != null) ? (map['price'] as num).toDouble() : null,
-      location: map['location'],
       applicants: List<String>.from(map['applicants'] ?? []),
       selectedFreelancerId: map['selectedFreelancerId'],
-      status: map['status'],
+      status: map['status'] ?? 'open',
       deadline: (map['deadline'] as Timestamp).toDate(),
-      createdAt: map['createdAt'] != null
-          ? (map['createdAt'] as Timestamp).toDate()
-          : null,
-      updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] as Timestamp).toDate()
+      createdAt:
+      map['createdAt'] != null ? (map['createdAt'] as Timestamp).toDate() : null,
+      updatedAt:
+      map['updatedAt'] != null ? (map['updatedAt'] as Timestamp).toDate() : null,
+
+      // ✅ parse location
+      location: map['location'] != null
+          ? JobLocationEntity(
+        name: map['location']['name'] ?? '',
+        detail: map['location']['detail'],
+        latitude: (map['location']['latitude'] as num).toDouble(),
+        longitude: (map['location']['longitude'] as num).toDouble(),
+      )
           : null,
     );
   }
 
+  // ------------------------------
+  // TO MAP (Model → Firestore)
+  // ------------------------------
   Map<String, dynamic> toMap() {
     return {
       'jobId': jobId,
@@ -46,18 +61,29 @@ class JobModel extends JobEntity {
       'title': title,
       'description': description,
       'price': price,
-      'location': location,
-      'applicants': applicants,
-      'selectedFreelancerId': selectedFreelancerId,
       'status': status,
       'deadline': Timestamp.fromDate(deadline),
+      'applicants': applicants,
+      'selectedFreelancerId': selectedFreelancerId,
       'createdAt': createdAt != null
           ? Timestamp.fromDate(createdAt!)
           : FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
+
+      'location': location != null
+          ? {
+        'name': location!.name,
+        'detail': location!.detail,
+        'latitude': location!.latitude,
+        'longitude': location!.longitude,
+      }
+          : null,
     };
   }
 
+  // ------------------------------
+  // FROM ENTITY (Domain → Data)
+  // ------------------------------
   factory JobModel.fromEntity(JobEntity entity) {
     return JobModel(
       jobId: entity.jobId,
@@ -75,3 +101,4 @@ class JobModel extends JobEntity {
     );
   }
 }
+

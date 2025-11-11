@@ -1,3 +1,5 @@
+import '../../../location/domain/entities/location_entity.dart';
+
 class UserProfileEntity {
   final String uid;
   final String email;
@@ -5,6 +7,7 @@ class UserProfileEntity {
   final String? phone;
   final String? avatarUrl;
   final List<String>? skills;
+  final LocationEntity? location;
 
   const UserProfileEntity({
     required this.uid,
@@ -13,6 +16,7 @@ class UserProfileEntity {
     this.phone,
     this.avatarUrl,
     this.skills,
+    this.location,
   });
 
 

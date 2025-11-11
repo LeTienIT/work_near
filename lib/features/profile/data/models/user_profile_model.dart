@@ -1,3 +1,4 @@
+import '../../../location/domain/entities/location_entity.dart';
 import '../../domain/entities/user_profile_entity.dart';
 
 class UserProfileModel extends UserProfileEntity {
@@ -8,6 +9,7 @@ class UserProfileModel extends UserProfileEntity {
     super.phone,
     super.avatarUrl,
     super.skills,
+    super.location,
   });
 
   factory UserProfileModel.fromMap(Map<String, dynamic> map) {
@@ -18,6 +20,10 @@ class UserProfileModel extends UserProfileEntity {
       phone: map['phone'],
       avatarUrl: map['avatarUrl'],
       skills: map['skills'] != null ? List<String>.from(map['skills']) : [],
+      location: map['location'] != null ? LocationEntity(
+        latitude: (map['location']['latitude'] as num).toDouble(),
+        longitude: (map['location']['longitude'] as num).toDouble(),
+      ) : null,
     );
   }
 
@@ -29,6 +35,10 @@ class UserProfileModel extends UserProfileEntity {
       'phone': phone,
       'avatarUrl': avatarUrl,
       'skills': skills ?? [],
+      'location': location != null ? {
+        'latitude': location!.latitude,
+        'longitude': location!.longitude,
+      }: null,
     };
   }
 }

@@ -40,4 +40,14 @@ class ProfileRepositoryImpl implements ProfileRepository{
     }
   }
 
+  @override
+  Future<Either<Failure, bool>> updateLocation(GetProfileParams params) async {
+    try{
+      await fireStore.updateUserLocation(params);
+      return Right(true);
+    }catch(e){
+      return left(ServerFailure(e.toString()));
+    }
+  }
+
 }

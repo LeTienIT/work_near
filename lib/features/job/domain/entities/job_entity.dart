@@ -1,10 +1,12 @@
+import 'package:work_near/features/job/domain/entities/job_location_entity.dart';
+
 class JobEntity{
   final String? jobId;
   final String ownerId;
   final String title;
   final String description;
   final double? price;
-  final String? location;
+  final JobLocationEntity? location;
   final List<String> applicants;
   final String? selectedFreelancerId;
   final String status;

@@ -8,7 +8,12 @@ import 'package:work_near/features/auth/domain/usecase/login_user.dart';
 import 'package:work_near/features/auth/domain/usecase/logout_user.dart';
 import 'package:work_near/features/auth/domain/usecase/register_user.dart';
 import 'package:work_near/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:work_near/features/location/data/datasources/location_data_source.dart';
+import 'package:work_near/features/location/data/repositories/location_repository_impl.dart';
+import 'package:work_near/features/location/domain/repositories/location_repository.dart';
+import 'package:work_near/features/location/domain/usecases/get_current_location.dart';
 import 'package:work_near/features/profile/domain/usecase/set_profile.dart';
+import 'package:work_near/features/profile/domain/usecase/update_location.dart';
 
 import '../../features/job/data/datasource/fire_job_datasource.dart';
 import '../../features/job/data/repositories/job_repository_impl.dart';
@@ -48,7 +53,8 @@ void initDI(){
           loginUser: di<LoginUser>(),
           logoutUser: di<LogoutUser>(),
           registerUser: di<RegisterUser>(),
-          auth: di<fb.FirebaseAuth>()
+          auth: di<fb.FirebaseAuth>(),
+          updateLocation: di<UpdateLocation>(),
       )
   );
 
@@ -64,6 +70,9 @@ void initDI(){
   );
   di.registerLazySingleton<SetProfile>(
         () => SetProfile(di<ProfileRepository>()),
+  );
+  di.registerLazySingleton<UpdateLocation>(
+        () => UpdateLocation(di<ProfileRepository>()),
   );
   di.registerFactory<ProfileBloc>(
         () => ProfileBloc(
@@ -86,5 +95,16 @@ void initDI(){
           () => JobBloc(
               di<JobAdd>()
           )
+  );
+  
+  di.registerLazySingleton<LocationDataSource>(
+      () => LocationDataSource()
+   );
+  di.registerLazySingleton<LocationRepository>(
+      () => LocationRepositoryImpl(di<LocationDataSource>())
+  );
+  
+  di.registerLazySingleton<GetCurrentLocation>(
+      () => GetCurrentLocation(di<LocationRepository>())
   );
 }

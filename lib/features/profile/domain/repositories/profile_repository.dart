@@ -9,4 +9,6 @@ abstract class ProfileRepository{
   Future<Either<Failure, UserProfileEntity>> getProfile(GetProfileParams params);
 
   Future<Either<Failure, bool>> setProfile(UserProfileEntity params);
+
+  Future<Either<Failure, bool>> updateLocation(GetProfileParams params);
 }

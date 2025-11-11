@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_near/features/auth/domain/entities/user_entity.dart';
+import 'package:work_near/features/profile/domain/usecase/update_location.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../../domain/usecase/login_user.dart';
 import '../../domain/usecase/logout_user.dart';
@@ -15,11 +16,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUser registerUser;
   final FirebaseAuth auth;
 
+  final UpdateLocation updateLocation;
+
   AuthBloc({
     required this.loginUser,
     required this.logoutUser,
     required this.registerUser,
     required this.auth,
+    required this.updateLocation,
   }) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<LogoutRequested>(_onLogoutRequested);
@@ -29,9 +33,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _listenToAuthChanges() {
     Future.delayed(Duration(milliseconds: 50));
-    auth.authStateChanges().listen((User? firebaseUser) {
+    auth.authStateChanges().listen((User? firebaseUser) async {
       if (firebaseUser != null) {
         final userEntity = UserEntity.fromFirebaseUser(firebaseUser);
+        await updateLocation(GetProfileParams(userEntity.uid, userEntity.email));
         emit(AuthAuthenticated(userEntity));
       }
     });
@@ -46,7 +51,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
           (failure) => emit(AuthError(_mapFailureToMessage(failure))),
-          (user) => emit(AuthAuthenticated(user)),
+          (user) async{
+            await updateLocation(GetProfileParams(user.uid, user.email));
+            emit(AuthAuthenticated(user));
+          },
     );
   }
 
